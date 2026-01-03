@@ -1,6 +1,16 @@
 node_modules/
+package-lock.json
 tdlib-db/
 tdlib-files/
 *.log
-
+tdjson.dll
+*.dll
+*.so
+*.dylib
+.DS_Store
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
 

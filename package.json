@@ -1,7 +1,7 @@
 {
   "name": "telegram-proxy-verifier",
   "version": "1.0.0",
-  "description": "Verify Telegram MTProto proxies using TDLib",
+  "description": "Verify Telegram MTProto proxies by actually communicating with Telegram servers using the official TDLib API",
   "main": "index.js",
   "bin": {
     "verify-proxy": "./index.js"
@@ -14,10 +14,25 @@
     "mtproto",
     "proxy",
     "tdlib",
-    "verification"
+    "verification",
+    "cli",
+    "telegram-proxy",
+    "proxy-checker",
+    "mtproto-proxy"
   ],
   "author": "",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/telegram-proxy-verifier.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/telegram-proxy-verifier/issues"
+  },
+  "homepage": "https://github.com/yourusername/telegram-proxy-verifier#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "prebuilt-tdlib": "^0.1008059.0",
     "tdl": "^7.4.1",
