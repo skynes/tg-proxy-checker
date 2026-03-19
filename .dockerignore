@@ -1,0 +1,8 @@
+node_modules
+.git
+tdlib-db
+tdlib-files
+*.md
+.github
+.env
+.env.*
