@@ -1,65 +1,62 @@
-# Docker: сборка, публикация и запуск
+# Docker: build, publish, and run
 
-**Исходный Node.js проект:** [telegram-mtproto-proxy-checker](https://github.com/AmirTahaMim/telegram-mtproto-proxy-checker) (оригинальный репозиторий).
+**Original Node.js project:** [telegram-mtproto-proxy-checker](https://github.com/AmirTahaMim/telegram-mtproto-proxy-checker).
 
 ---
 
-## Запуск одной командой на любом сервере
+## One-command run on any server
 
-Если образ уже опубликован в Docker Hub, на **любом сервере** с установленным Docker достаточно:
+If the image is already published on Docker Hub, on **any server** with Docker installed:
 
 ```bash
 docker run -d -p 1227:1227 --name tg-proxy-checker --restart unless-stopped skynesdev/tg-proxy-checker:latest
 ```
 
-Проверка:
+Test:
 ```bash
 curl "http://127.0.0.1:1227?link=https%3A%2F%2Ft.me%2Fproxy%3Fserver%3D1.2.3.4%26port%3D443%26secret%3Dtest"
 ```
 
-Остановка:
+Stop:
 ```bash
 docker stop tg-proxy-checker && docker rm tg-proxy-checker
 ```
 
 ---
 
-## Публикация образа в Docker Hub (один раз)
+## Publishing the image to Docker Hub (one-time)
 
-Делается на машине, где есть собранный проект и аккаунт Docker Hub.
+On the machine where the project is built and you have a Docker Hub account.
 
-### 1. Регистрация
+### 1. Registration
 
-- Зарегистрируйтесь на [Docker Hub](https://hub.docker.com/) (если ещё нет).
-- Создайте репозиторий с именем `tg-proxy-checker` или используйте автоматическое создание при первом push.
+- Sign up at [Docker Hub](https://hub.docker.com/) if needed.
+- Create a repository named `tg-proxy-checker`, or let it be created on first push.
 
-### 2. Вход и публикация
+### 2. Login and publish
 
 ```bash
 cd /var/www/tg-proxy-checker
 
-# Вход (введёте логин и пароль)
 docker login
 
-# Сборка с тегом для Docker Hub
 docker build -t skynesdev/tg-proxy-checker:latest .
 
-# Публикация
 docker push skynesdev/tg-proxy-checker:latest
 ```
 
-После этого образ будет доступен по имени `skynesdev/tg-proxy-checker:latest`, и его можно запускать одной командой `docker run ...` на любом сервере (см. выше).
+The image will be available as `skynesdev/tg-proxy-checker:latest` and can be run with the command above on any server.
 
-### 3. Обновление образа
+### 3. Updating the image
 
-После изменений в коде повторите на этой же машине:
+After code changes, on the build machine:
 
 ```bash
 docker build -t skynesdev/tg-proxy-checker:latest .
 docker push skynesdev/tg-proxy-checker:latest
 ```
 
-На другом сервере для обновления:
+On another server to update:
 
 ```bash
 docker pull skynesdev/tg-proxy-checker:latest
@@ -69,21 +66,21 @@ docker run -d -p 1227:1227 --name tg-proxy-checker --restart unless-stopped skyn
 
 ---
 
-## Альтернатива: без регистрации (образ в файле)
+## Alternative: without Docker Hub (image as file)
 
-Если не хотите использовать Docker Hub, можно перенести образ файлом:
+To move the image without a registry:
 
-**На сервере, где собирали:**
+**On the build machine:**
 ```bash
 docker build -t tg-proxy-checker:latest .
 docker save tg-proxy-checker:latest -o tg-proxy-checker.tar
-# Скопируйте tg-proxy-checker.tar на другой сервер (scp, rsync и т.д.)
+# Copy tg-proxy-checker.tar to the other server (scp, rsync, etc.)
 ```
 
-**На другом сервере:**
+**On the other server:**
 ```bash
 docker load -i tg-proxy-checker.tar
 docker run -d -p 1227:1227 --name tg-proxy-checker --restart unless-stopped tg-proxy-checker:latest
 ```
 
-Минус: при каждом обновлении нужно снова делать save и копировать файл.
+Downside: you need to save and copy the file again for each update.

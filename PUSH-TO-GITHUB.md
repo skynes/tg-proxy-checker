@@ -1,48 +1,46 @@
-# Публикация в GitHub (skynes/tg-proxy-checker)
+# Publishing to GitHub (skynes/tg-proxy-checker)
 
-## 1. Создать репозиторий на GitHub
+## 1. Create the repository on GitHub
 
-1. Открой: **https://github.com/organizations/skynes/repositories/new**  
-   (или зайди в [github.com/skynes](https://github.com/skynes) → **Repositories** → **New**)
+1. Open **https://github.com/organizations/skynes/repositories/new**  
+   (or go to [github.com/skynes](https://github.com/skynes) → **Repositories** → **New**)
 2. **Repository name:** `tg-proxy-checker`
 3. **Visibility:** Public
-4. **НЕ** ставь галочки "Add a README", ".gitignore", "License" — репозиторий должен быть **пустой**
-5. Нажми **Create repository**
+4. **Do not** check "Add a README", ".gitignore", or "License" — the repository should be **empty**
+5. Click **Create repository**
 
-## 2. На сервере: закоммитить и запушить
+## 2. On the server: commit and push
 
-Выполни в терминале:
+Run in the terminal:
 
 ```bash
 cd /var/www/tg-proxy-checker
 
-# Все файлы в коммит
 git add -A
 git status
 git commit -m "tg-proxy-checker: HTTP API, SOCKS5, Docker"
 
-# Подключить репо skynes (старый origin — оригинал — переименуем в upstream)
+# Point origin to skynes repo (rename current origin to upstream if it was the original)
 git remote rename origin upstream
 git remote add origin https://github.com/skynes/tg-proxy-checker.git
 
-# Отправить в GitHub
 git push -u origin main
 ```
 
-Если попросит логин/пароль — используй свой GitHub-аккаунт. Для пароля лучше создать **Personal Access Token** (GitHub → Settings → Developer settings → Personal access tokens) и ввести его вместо пароля.
+If prompted for login/password, use your GitHub account. For password, use a **Personal Access Token** (GitHub → Settings → Developer settings → Personal access tokens) instead of your account password.
 
-После этого код будет в **https://github.com/skynes/tg-proxy-checker**.
+The code will then be at **https://github.com/skynes/tg-proxy-checker**.
 
-## Дальше
+## Next steps
 
-Клонирование на другом компьютере:
+Clone on another machine:
 ```bash
 git clone https://github.com/skynes/tg-proxy-checker.git
 cd tg-proxy-checker
 npm install
 ```
 
-Обновление из своего репо:
+Pull updates:
 ```bash
 git pull origin main
 ```

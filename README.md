@@ -2,6 +2,8 @@
 
 A Node.js CLI and HTTP API that verifies Telegram proxies (MTProto and SOCKS5) by actually communicating with Telegram servers using the official TDLib API.
 
+Based on [telegram-mtproto-proxy-checker](https://github.com/AmirTahaMim/telegram-mtproto-proxy-checker) (HTTP API, SOCKS5 support, and Docker image added in this fork).
+
 ## Features
 
 - ✅ **Real Verification**: Verifies proxies by actually communicating with Telegram servers, not just TCP connections
@@ -47,8 +49,8 @@ Parameters: **server** (required), **port** (required), **user** (optional), **p
 ### Clone from GitHub
 
 ```bash
-git clone https://github.com/AmirTahaMim/telegram-mtproto-proxy-checker.git
-cd telegram-mtproto-proxy-checker
+git clone https://github.com/skynes/tg-proxy-checker.git
+cd tg-proxy-checker
 npm install
 ```
 
@@ -114,14 +116,14 @@ curl "http://127.0.0.1:1227?link=https%3A%2F%2Ft.me%2Fproxy%3Fserver%3D1.2.3.4%2
 
 ### Docker
 
-**Локальная сборка и запуск:**
+**Local build and run:**
 ```bash
 docker build -t tg-proxy-checker .
-# или с Docker Hub: docker run -d -p 1227:1227 --name tg-proxy-checker --restart unless-stopped skynesdev/tg-proxy-checker:latest
+# Or from Docker Hub: docker run -d -p 1227:1227 --name tg-proxy-checker --restart unless-stopped skynesdev/tg-proxy-checker:latest
 docker run -d -p 1227:1227 --name tg-proxy-checker tg-proxy-checker:latest
 ```
 
-**Запуск одной командой с Docker Hub** (если образ уже опубликован): см. [DOCKER.md](DOCKER.md).
+**One-command run from Docker Hub** (if the image is already published): see [DOCKER.md](DOCKER.md).
 
 Then: `GET http://127.0.0.1:1227?link=...` as above.
 
@@ -158,7 +160,7 @@ INVALID_SECRET
 ### Example 1: Working Proxy
 ```bash
 $ node index.js "https://t.me/proxy?server=163.5.31.10&port=8443&secret=EERighJJvXrFGRMCIMJdCQRueWVrdGFuZXQuY29tZmFyYWthdi5jb212YW4ubmFqdmEuY29tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-OK
+OK 245
 ```
 
 ### Example 2: Failed Proxy
