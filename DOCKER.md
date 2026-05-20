@@ -1,6 +1,23 @@
 # Docker: build, publish, and run
 
+**Image on Docker Hub:** [skynesdev/tg-proxy-checker](https://hub.docker.com/r/skynesdev/tg-proxy-checker)
+
 **Original Node.js project:** [telegram-mtproto-proxy-checker](https://github.com/AmirTahaMim/telegram-mtproto-proxy-checker).
+
+---
+
+## Docker Hub repository page (overview)
+
+The Hub page currently has no overview. After each release, update it:
+
+1. Open [skynesdev/tg-proxy-checker](https://hub.docker.com/r/skynesdev/tg-proxy-checker) → **Settings** (gear) or **Edit repository**.
+2. **Short description** (optional, ~150 chars):
+   ```
+   HTTP API to verify Telegram MTProto & SOCKS5 proxies via TDLib. Port 1227.
+   ```
+3. **Full description:** copy the Docker section from [README.md](README.md) (or the whole README) into the overview field and save.
+
+**Alternative:** connect the GitHub repo `skynes/tg-proxy-checker` in Docker Hub → **Build & Deploy** / **GitHub** so the Hub page syncs `README.md` from `main`.
 
 ---
 
@@ -12,9 +29,12 @@ If the image is already published on Docker Hub, on **any server** with Docker i
 docker run -d -p 1227:1227 --name tg-proxy-checker --restart unless-stopped skynesdev/tg-proxy-checker:latest
 ```
 
+Optional: `MAX_CONCURRENT` (default `3`) — how many proxy checks run in parallel. Each check uses its own temp TDLib folder.
+
 Test:
 ```bash
-curl "http://127.0.0.1:1227?link=https%3A%2F%2Ft.me%2Fproxy%3Fserver%3D1.2.3.4%26port%3D443%26secret%3Dtest"
+curl -G "http://127.0.0.1:1227" \
+  --data-urlencode "link=https://t.me/proxy?server=tg3.f2p.ms&port=442&secret=eedeadbeefcafebabefeedfacef0e0d0c07777772e6170706c652e636f6d"
 ```
 
 Stop:

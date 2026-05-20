@@ -1,6 +1,8 @@
 node_modules/
 tdlib-db/
 tdlib-files/
+tdlib-db-test/
+tdlib-db-test2/
 *.log
 tdjson.dll
 *.dll

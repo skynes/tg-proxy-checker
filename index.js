@@ -1,14 +1,6 @@
 #!/usr/bin/env node
 
-const tdl = require('tdl');
-const { getTdjson } = require('prebuilt-tdlib');
 const { parseAndPrepare, verifyProxy } = require('./lib/verify');
-
-try {
-  tdl.configure({ tdjson: getTdjson() });
-} catch (error) {
-  // fallback to system library
-}
 
 const args = process.argv.slice(2);
 const debugMode = args.includes('--debug');

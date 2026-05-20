@@ -3,8 +3,14 @@
 
 const http = require('http');
 const { parseAndPrepare, verifyProxy } = require('./lib/verify');
+const { RequestQueue } = require('./lib/request-queue');
 
 const PORT = Number(process.env.PORT) || 1227;
+const MAX_CONCURRENT = Math.max(
+  1,
+  parseInt(process.env.MAX_CONCURRENT || '3', 10) || 3
+);
+const verifyQueue = new RequestQueue(MAX_CONCURRENT);
 
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url || '', `http://127.0.0.1:${PORT}`);
@@ -29,7 +35,7 @@ const server = http.createServer(async (req, res) => {
 
   try {
     const parsed = parseAndPrepare(proxyUrl);
-    const result = await verifyProxy(parsed);
+    const result = await verifyQueue.run(() => verifyProxy(parsed));
 
     if (result.success) {
       res.writeHead(200);
@@ -48,4 +54,5 @@ const server = http.createServer(async (req, res) => {
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`Telegram proxy checker (MTProto + SOCKS5) listening on http://0.0.0.0:${PORT}`);
   console.log(`Usage: GET ?link=<url-encoded-proxy-link>`);
+  console.log(`Concurrency: ${MAX_CONCURRENT} checks in parallel (MAX_CONCURRENT env)`);
 });

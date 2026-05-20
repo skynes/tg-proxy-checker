@@ -8,7 +8,7 @@ Based on [telegram-mtproto-proxy-checker](https://github.com/AmirTahaMim/telegra
 
 - ✅ **Real Verification**: Verifies proxies by actually communicating with Telegram servers, not just TCP connections
 - ✅ **MTProto & SOCKS5**: Supports both MTProxy and SOCKS5 proxy types
-- ✅ **Uses TDLib**: Official Telegram Database Library API (`addProxy` and `pingProxy` methods)
+- ✅ **Uses TDLib**: Official Telegram Database Library API (`testProxy` + `pingProxy` with proxy object)
 - ✅ **No Authorization Required**: Works before login - no phone number or bot token needed
 - ✅ **Multiple URL Formats**: All official Telegram deep-link formats (`tg://` and `t.me`, see below)
 - ✅ **Smart Secret Handling**: Auto-detects and converts hex/base64 secrets (MTProto)
@@ -61,8 +61,7 @@ npm install
 ```
 
 This will install:
-- `tdl` - Node.js wrapper for TDLib
-- `tdl-tdlib-addon` - TDLib native bindings
+- `tdl` - Node.js wrapper for TDLib (v8+, includes native bindings)
 - `prebuilt-tdlib` - Pre-built TDLib binaries for your platform
 
 ## Usage
@@ -106,6 +105,8 @@ npm run server
 
 **Request:** `GET http://127.0.0.1:1227?link=<url-encoded-proxy-link>`
 
+Each check uses a **temporary TDLib directory** (removed after the request). Up to **3 checks run in parallel** by default; extra requests wait in a FIFO queue. Set `MAX_CONCURRENT=1` for fully serial mode, or raise the limit if the host has enough RAM.
+
 **Success response:** `{"status":1,"ping":100}`  
 **Error response:** `{"status":0,"error":"..."}`
 
@@ -116,14 +117,18 @@ curl "http://127.0.0.1:1227?link=https%3A%2F%2Ft.me%2Fproxy%3Fserver%3D1.2.3.4%2
 
 ### Docker
 
-**Local build and run:**
+**Run from Docker Hub** (recommended):
 ```bash
-docker build -t tg-proxy-checker .
-# Or from Docker Hub: docker run -d -p 1227:1227 --name tg-proxy-checker --restart unless-stopped skynesdev/tg-proxy-checker:latest
-docker run -d -p 1227:1227 --name tg-proxy-checker tg-proxy-checker:latest
+docker run -d -p 1227:1227 --name tg-proxy-checker --restart unless-stopped skynesdev/tg-proxy-checker:latest
 ```
 
-**One-command run from Docker Hub** (if the image is already published): see [DOCKER.md](DOCKER.md).
+**Local build and run:**
+```bash
+docker build -t skynesdev/tg-proxy-checker:latest .
+docker run -d -p 1227:1227 --name tg-proxy-checker --restart unless-stopped skynesdev/tg-proxy-checker:latest
+```
+
+More details (publish, update, Hub overview, offline image): [DOCKER.md](DOCKER.md).
 
 Then: `GET http://127.0.0.1:1227?link=...` as above.
 
@@ -190,8 +195,8 @@ NO: CONNECTION_REFUSED: Proxy server refused the connection
 1. **URL Parsing**: Detects link type (MTProxy or SOCKS5) and extracts parameters (see [Supported proxy link formats](#supported-proxy-link-formats)).
 2. **MTProxy only – Secret normalization**: Secret is decoded (hex or URL-safe Base64) and converted to the format TDLib expects.
 3. **TDLib Client**: Creates a TDLib client (no authorization required).
-4. **Add Proxy**: Calls `addProxy` with `proxyTypeMtproto` (server, port, secret) or `proxyTypeSocks5` (server, port, username, password).
-5. **Ping Proxy**: Calls `pingProxy` to verify actual connectivity to Telegram servers.
+4. **Test Proxy**: Calls `testProxy` — sends a real request to Telegram through the proxy (dead hosts fail).
+5. **Ping Proxy**: Calls `pingProxy` with the proxy object (not `proxy_id`) to measure latency in ms.
 6. **Result**: Returns success with ping time (ms) or a detailed error message.
 
 ## Error Messages Explained
@@ -215,7 +220,7 @@ NO: CONNECTION_REFUSED: Proxy server refused the connection
 
 ## Technical Details
 
-- Uses TDLib's `addProxy` and `pingProxy` methods
+- Uses TDLib's `testProxy` and `pingProxy` methods (proxy object; avoids false OK from `proxy_id`)
 - Proxy verification works **before authorization** (no login required)
 - Timeout is set to 15 seconds for proxy ping
 - Supports long Fake-TLS Base64 secrets

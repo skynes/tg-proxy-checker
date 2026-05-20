@@ -9,8 +9,10 @@ RUN npm ci --omit=dev
 FROM node:20-bookworm-slim
 
 LABEL org.opencontainers.image.title="tg-proxy-checker"
-LABEL org.opencontainers.image.description="HTTP API to check Telegram proxies (MTProto and SOCKS5). GET ?link=<url> returns {status:1, ping:ms} or {status:0, error}. Port 1227."
-LABEL org.opencontainers.image.source="https://github.com/AmirTahaMim/telegram-mtproto-proxy-checker"
+LABEL org.opencontainers.image.description="HTTP API to check Telegram MTProto and SOCKS5 proxies via TDLib. Port 1227."
+LABEL org.opencontainers.image.source="https://github.com/skynes/tg-proxy-checker"
+LABEL org.opencontainers.image.documentation="https://github.com/skynes/tg-proxy-checker/blob/main/DOCKER.md"
+LABEL org.opencontainers.image.url="https://hub.docker.com/r/skynesdev/tg-proxy-checker"
 
 WORKDIR /app
 COPY --from=builder /app/node_modules ./node_modules
@@ -19,6 +21,7 @@ COPY lib ./lib
 COPY server.js ./
 
 ENV PORT=1227
+ENV MAX_CONCURRENT=3
 EXPOSE 1227
 
 CMD ["node", "server.js"]
